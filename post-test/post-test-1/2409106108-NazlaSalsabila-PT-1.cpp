@@ -12,16 +12,16 @@ bool cekVerifikasi1(int n) {
     return true;
 }
 
-bool validasiKode(int code) {
-    return (code > 100 && code < 99999);
+bool validasiKode(int kode) {
+    return (kode > 100 && kode < 99999);
 }
 
-bool cekVerifikasi2(int code) {
-    return (code % 2 == 0 && code % 3 == 0 && code % 5 != 0);
+bool cekVerifikasi2(int kode) {
+    return (kode % 2 == 0 && kode % 3 == 0 && kode % 5 != 0);
 }
 
-bool cekVerifikasi3(int code) {
-    string str = to_string(code);
+bool cekVerifikasi3(int kode) {
+    string str = to_string(kode);
     string reversedStr = string(str.rbegin(), str.rend());
     return str == reversedStr;
 }
@@ -37,12 +37,12 @@ int main() {
 
     cout << "Login berhasil!" << endl;
 
-    int code;
+    int kode;
     while (true) {
         cout << "Masukkan kode sandi rahasia : ";
-        cin >> code;
+        cin >> kode;
 
-        if (!validasiKode(code)) {
+        if (!validasiKode(kode)) {
             cout << "Kode sandi harus lebih dari 100 dan tidak lebih dari 99999." << endl;
             continue;
         }
@@ -60,24 +60,24 @@ int main() {
 
             switch (choice) {
                 case 1:
-                    if (cekVerifikasi1(code)) {
-                        cout << code << " adalah bilangan prima." << endl;
+                    if (cekVerifikasi1(kode)) {
+                        cout << kode << " adalah bilangan prima." << endl;
                     } else {
-                        cout << code << " bukan bilangan prima." << endl;
+                        cout << kode << " bukan bilangan prima." << endl;
                     }
                     break;
                 case 2:
-                    if (cekVerifikasi2(code)) {
-                        cout << code << " habis dibagi 2 dan 3 tetapi tidak habis dibagi 5." << endl;
+                    if (cekVerifikasi2(kode)) {
+                        cout << kode << " bilangan habis dibagi 2 dan 3 tetapi tidak habis dibagi 5." << endl;
                     } else {
-                        cout << code << " bukan bilangan habis dibagi 2 dan 3 tetapi tidak habis dibagi 5." << endl;
+                        cout << kode << " bukan bilangan habis dibagi 2 dan 3 tetapi tidak habis dibagi 5." << endl;
                     }
                     break;
                 case 3: 
-                    if (cekVerifikasi3(code)) {
-                        cout << code << " adalah bilangan Palindrome." << endl;
+                    if (cekVerifikasi3(kode)) {
+                        cout << kode << " adalah bilangan Palindrome." << endl;
                     } else {
-                        cout << code << " bukan termasuk bilangan Palindrome." << endl;
+                        cout << kode << " bukan termasuk bilangan Palindrome." << endl;
                     }
                     break;
                 case 4:
@@ -90,9 +90,9 @@ int main() {
             char lanjutkanMemilihMenu;
             cout << "Apakah ingin melanjutkan ke menu? (y/n): ";
             cin >> lanjutkanMemilihMenu;
-            if (lanjutkanMemilihMenu != 'y' && lanjutkanMemilihMenu != 'Y') {
+            if (lanjutkanMemilihMenu != 'y')
                break ;
-            }
+            
         }
     }
 
