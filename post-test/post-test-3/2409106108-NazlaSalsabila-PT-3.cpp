@@ -51,7 +51,7 @@ int main() {
                 cout << "Mohon maaf jumlah pengguna sudah melewati maksimum." << endl;
                 continue;
             }
-
+            
             Akun akunBaru;
             cout << "Masukkan username: ";
             cin >> akunBaru.username;
