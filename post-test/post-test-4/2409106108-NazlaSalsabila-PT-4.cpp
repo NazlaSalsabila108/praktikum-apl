@@ -1,0 +1,243 @@
+#include <iostream>
+#include <string>
+#include <iomanip>
+
+using namespace std;
+
+const int max_coba = 3;
+const int max_pasien = 100;
+const int max_pengguna = 50;
+
+struct RiwayatObat {
+    string diagnosis;
+    string riwayatObat;
+};
+
+struct Pasien {
+    string nama;
+    int umur;
+    RiwayatObat riwayat;
+};
+
+struct Akun {
+    string username;
+    string password;
+    string role;
+};
+
+void registrasi(Akun pengguna[], int &jumlahPengguna);
+bool login(Akun pengguna[], int jumlahPengguna, string &role);
+void tambahPasien(Pasien dataPasien[], int &hitungPasien);
+void tampilkanDataPasien(Pasien dataPasien[], int hitungPasien);
+void updatePasien(Pasien dataPasien[], int hitungPasien);
+void hapusPasien(Pasien dataPasien[], int &hitungPasien);
+void tampilkanDataPasienRekursif(Pasien dataPasien[], int index, int hitungPasien);
+void tampilkanDataPasienRekursif(Pasien dataPasien[], int hitungPasien);
+
+int main() {
+    Akun pengguna[max_pengguna];
+    int jumlahPengguna = 0;
+
+    Pasien dataPasien[max_pasien];  
+    int hitungPasien = 0;
+
+    while (true) {
+        int menuUtama;
+        cout << "Menu Utama:\n";
+        cout << "1. Registrasi\n";
+        cout << "2. Login\n";
+        cout << "3. Keluar\n";
+        cout << "Masukkan pilihan Anda: ";
+        cin >> menuUtama;
+
+        if (menuUtama == 3) {
+            cout << "Program berhenti. Terimakasih sudah mengakses layanan kami\n";
+            break; 
+        }
+
+        if (menuUtama == 1) {
+            registrasi(pengguna, jumlahPengguna);
+        } else if (menuUtama == 2) {
+            string role;
+            bool loginBerhasil = login(pengguna, jumlahPengguna, role);
+
+            if (!loginBerhasil) {
+                cout << "Terlalu banyak percobaan login yang gagal. Keluar program.\n";
+                break; 
+            }
+
+            while (true) {
+                int pilihan;
+                cout << "\nSilahkan pilih menu yang anda butuhkan:\n";
+                if (role == "admin") {
+                    cout << "1. Tambah Pasien\n";
+                    cout << "2. Tampilkan Data Pasien\n";
+                    cout << "3. Update Pasien\n";
+                    cout << "4. Hapus Pasien\n";
+                    cout << "5. Keluar\n";
+                } else if (role == "user") {
+                    cout << "1. Tampilkan Data Pasien\n";
+                    cout << "2. Keluar\n";
+                }
+                cout << "Masukkan pilihan Anda: ";
+                cin >> pilihan;
+
+                if (role == "admin") {
+                    if (pilihan == 1) {
+                        tambahPasien(dataPasien, hitungPasien);
+                    } else if (pilihan == 2) {
+                        tampilkanDataPasien(dataPasien, hitungPasien);
+                    } else if (pilihan == 3) {
+                        updatePasien(dataPasien, hitungPasien);
+                    } else if (pilihan == 4) {
+                        hapusPasien(dataPasien, hitungPasien);
+                    } else if (pilihan == 5) {
+                        cout << "Berhasil Logout." << endl;
+                        break;
+                    } else {
+                        cout << "Pilihan tidak valid. Mohon coba lagi." << endl;
+                    }
+                } else if (role == "user") {
+                    if (pilihan == 1) {
+                        tampilkanDataPasien(dataPasien, hitungPasien);
+                    } else if (pilihan == 2) {
+                        cout << "Berhasil Logout." << endl;
+                        break;
+                    } else {
+                        cout << "Pilihan tidak valid. Mohon coba lagi." << endl;
+                    }
+                }
+            }
+        } else {
+            cout << "Pilihan tidak valid. Mohon coba lagi." << endl;
+        }
+    }
+    return 0;
+}
+
+void registrasi(Akun pengguna[], int &jumlahPengguna) {
+    if (jumlahPengguna >= max_pengguna) {
+        cout << "Mohon maaf jumlah pengguna sudah melewati maksimum." << endl;
+        return;
+    }
+    
+    Akun akunBaru;
+    cout << "Masukkan username: ";
+    cin >> akunBaru.username;
+    cout << "Masukkan password: ";
+    cin >> akunBaru.password;
+    cout << "Masukkan role (admin/user): ";
+    cin >> akunBaru.role;
+
+    pengguna[jumlahPengguna] = akunBaru;
+    jumlahPengguna++;
+    cout << "Registrasi berhasil! Silahkan login" << endl;
+}
+
+bool login(Akun pengguna[], int jumlahPengguna, string &role) {
+    string username, password;
+    for (int i = 0; i < max_coba; ++i) {
+        cout << "Nama Pengguna: ";
+        cin >> username;
+        cout << "Password: ";
+        cin >> password;
+
+        for (int j = 0; j < jumlahPengguna; ++j) {
+            if (pengguna[j].username == username && pengguna[j].password == password) {
+                role = pengguna[j].role;
+                return true;
+            }
+        }
+
+        cout << "Nama pengguna dan password tidak ditemukan. Silahkan Registrasi terlebih dahulu" << endl;
+    }
+    return false;
+}
+
+void tambahPasien(Pasien dataPasien[], int &hitungPasien) {
+    if (hitungPasien >= max_pasien) {
+        cout << "Daftar pasien penuh." << endl;
+        return;
+    }
+
+    cout << "Masukkan nama: ";
+    cin.ignore();
+    getline(cin, dataPasien[hitungPasien].nama);
+    cout << "Masukkan umur: ";
+    cin >> dataPasien[hitungPasien].umur;
+    cin.ignore(); 
+    cout << "Masukkan diagnosis: ";
+    getline(cin, dataPasien[hitungPasien].riwayat.diagnosis);
+    cout << "Masukkan riwayat obat sebelumnya: ";
+    getline(cin, dataPasien[hitungPasien].riwayat.riwayatObat);
+    hitungPasien++;
+}
+
+void tampilkanDataPasien(Pasien dataPasien[], int hitungPasien) {
+    cout << left << setw(20) << "Nama" << setw(5) << "Umur" << setw(20) << "Diagnosis" << setw(15) << "Riwayat obat" << endl;
+    cout << "-------------------------------------------------------------------" << endl;
+    tampilkanDataPasienRekursif(dataPasien, 0, hitungPasien);
+}
+
+void tampilkanDataPasienRekursif(Pasien dataPasien[], int index, int hitungPasien) {
+    if (index >= hitungPasien) return;
+    cout << left << setw(20) << dataPasien[index].nama 
+         << setw(5) << dataPasien[index].umur 
+         << setw(20) << dataPasien[index].riwayat.diagnosis 
+         << setw(15) << dataPasien[index].riwayat.riwayatObat << endl;
+    tampilkanDataPasienRekursif(dataPasien, index + 1, hitungPasien);
+}
+
+void tampilkanDataPasienRekursif(Pasien dataPasien[], int hitungPasien) {
+    tampilkanDataPasienRekursif(dataPasien, 0, hitungPasien);
+}
+
+void updatePasien(Pasien dataPasien[], int hitungPasien) {
+    string nama;
+    cout << "Masukkan nama yang akan diupdate: ";
+    cin.ignore();
+    getline(cin, nama);
+
+    int temukan = 0;
+    for (int i = 0; i < hitungPasien; ++i) {
+        if (dataPasien[i].nama == nama) {
+            cout << "Masukkan umur baru: ";
+            cin >> dataPasien[i].umur;
+            cin.ignore(); 
+            cout << "Masukkan diagnosis baru: ";
+            getline(cin, dataPasien[i].riwayat.diagnosis);
+            cout << "Masukkan riwayat obat baru: ";
+            getline(cin, dataPasien[i].riwayat.riwayatObat);
+            temukan = 1;
+            break;
+        }
+    }
+
+    if (!temukan) {
+        cout << "Pasien tidak ditemukan." << endl;
+    }
+}
+
+void hapusPasien(Pasien dataPasien[], int &hitungPasien) {
+    string nama;
+    cout << "Masukkan nama yang akan dihapus: ";
+    cin.ignore();
+    getline(cin, nama);
+
+    int temukan = 0;
+    for (int i = 0; i < hitungPasien; ++i) {
+        if (dataPasien[i].nama == nama) {
+            for (int j = i; j < hitungPasien - 1; ++j) {
+                dataPasien[j] = dataPasien[j + 1];
+            }
+            hitungPasien--;
+            cout << "Nama Pasien berhasil dihapus." << endl;
+            temukan = 1;
+            break;
+        }
+    }
+
+    if (!temukan) {
+        cout << "Nama Pasien tidak ditemukan." << endl;
+    }
+}
